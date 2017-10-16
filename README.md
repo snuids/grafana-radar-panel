@@ -20,7 +20,7 @@ Copy the dist folder in your grafana plugin directory and rename it to radarpane
 The panel datasource must include a single query having the following characteristics:
 * A single group (No date histogram)
 * Two groups (No date histogram)
-* Three groups and the last group is a date histogram (As shown in the following screenshot)
+* Three groups. In this case the last group is a date histogram (As shown in the following screenshot) The value used is the last time serie point of the aggregation.
 
 
 ![Radar](https://raw.githubusercontent.com/snuids/grafana-radar-panel/master/src/img/screenshot-radar-metrics.jpg)
