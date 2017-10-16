@@ -1,0 +1,39 @@
+<div class="editor-row">
+	<div class="section gf-form-group">
+		<h5 class="section-heading">Radar options</h5>
+		
+		<div class="gf-form">
+				<label class="gf-form-label width-12">Background</label>
+				<span class="max-width-10">
+					<spectrum-picker class="gf-form-input" ng-model="ctrl.panel.bgColor" ng-change="ctrl.render()" ></spectrum-picker>
+				</span>
+		</div>		
+		<div class="gf-form">
+			<label class="gf-form-label width-12">Font Color</label>
+			<span class="max-width-10">
+				<spectrum-picker class="gf-form-input" ng-model="ctrl.panel.radarSettings.fontColor" ng-change="ctrl.render()" ></spectrum-picker>
+			</span>
+		</div>
+		<div class="gf-form">
+			<label class="gf-form-label width-12">Grid Color</label>
+			<span class="max-width-10">
+				<spectrum-picker class="gf-form-input" ng-model="ctrl.panel.radarSettings.gridColor" ng-change="ctrl.render()" ></spectrum-picker>
+			</span>
+		</div>		
+		<div class="gf-form">
+			<label class="gf-form-label width-12">Font Size</label>
+			<input type="text" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.radarSettings.fontSize" ng-change="ctrl.render()" ng-model-onblur>
+		</div>
+	</div>
+
+	<div class="section gf-form-group">
+		<h5 class="section-heading">Legend</h5>
+		<div class="gf-form">
+			<span class="gf-form-label width-10">Position</span>
+			<div class="gf-form-select-wrapper width-8">
+				<select class="gf-form-input" ng-model="ctrl.panel.radarSettings.legendType" ng-options="t for t in ['left', 'right', 'top', 'bottom']" ng-change="ctrl.render()"></select>
+			</div>
+		</div>
+	</div>
+
+</div>

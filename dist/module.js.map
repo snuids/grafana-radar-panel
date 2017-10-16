@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/module.js"],"names":["RadarGraphCtrl"],"mappings":";;;;;;;;AAAQA,oB,oBAAAA,c;;;2BAGNA,c","file":"module.js","sourcesContent":["import {RadarGraphCtrl} from './radargraph_ctrl';\n\nexport {\n  RadarGraphCtrl as PanelCtrl\n};\n"]}
