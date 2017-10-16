@@ -17,6 +17,12 @@ Copy the dist folder in your grafana plugin directory and rename it to radarpane
 
 ## Metrics Configuration
 
+The panel datasource must include a single query having the following characteristics:
+* A single group (No date histogram)
+* Two groups (No date histogram)
+* Three groups and the last group is a date histogram (As shown in the following screenshot)
+
+
 ![Radar](https://raw.githubusercontent.com/snuids/grafana-radar-panel/master/src/img/screenshot-radar-metrics.jpg)
 ![Radar](https://raw.githubusercontent.com/snuids/grafana-radar-panel/master/src/img/screenshot-radar-metrics2.jpg)
 
