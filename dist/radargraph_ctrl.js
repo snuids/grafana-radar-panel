@@ -71,7 +71,8 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
           fontColor: 'gray',
           gridColor: 'gray',
           fontSize: 14,
-          legendType: 'right'
+          legendType: 'right',
+          ignoreTimeInfluxDB: false
         }
       };
 
@@ -190,20 +191,50 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
             var labels = {};
             var datasets = {};
 
-            for (var i = 0; i < fulldata[0].rows.length; i++) {
-              if (fulldata[0].rows[i].length > 2) // more than 1 aggregation
-                {
+            var ignoretimeinfluxdn = this.panel.radarSettings.ignoreTimeInfluxDB;
 
-                  if (!(fulldata[0].rows[i][0] in labels)) labels[fulldata[0].rows[i][0]] = true;
-                  if (!(fulldata[0].rows[i][1] in datasets)) datasets[fulldata[0].rows[i][1]] = {};
-                  datasets[fulldata[0].rows[i][1]][fulldata[0].rows[i][0]] = fulldata[0].rows[i][2];
-                } else {
-                if (!(fulldata[0].rows[i][0] in labels)) labels[fulldata[0].rows[i][0]] = true;
+            if (ignoretimeinfluxdn) {
+              //      console.log('IGNORING')
+              for (var i = 0; i < fulldata[0].rows.length; i++) {
+                if (!(fulldata[0].rows[i][1] in labels)) labels[fulldata[0].rows[i][1]] = true;
 
-                var serie = fulldata[0]["columns"][0].text;
+                var serie = 'NA';
+
+                if (fulldata[0]["columns"].length > 2) serie = fulldata[0]["columns"][2].text;else serie = fulldata[0]["columns"][0].text;
 
                 if (!(serie in datasets)) datasets[serie] = {};
-                datasets[serie][fulldata[0].rows[i][0]] = fulldata[0].rows[i][1];
+                datasets[serie][fulldata[0].rows[i][1]] = fulldata[0].rows[i][2];
+              }
+              for (var j = 1; j < fulldata.length; j++) {
+                for (var i = 0; i < fulldata[j].rows.length; i++) {
+                  if (!(fulldata[j].rows[i][1] in labels)) labels[fulldata[j].rows[i][1]] = true;
+
+                  var serie = 'NA';
+
+                  if (fulldata[j]["columns"].length > 2) serie = fulldata[j]["columns"][2].text;else serie = fulldata[j]["columns"][0].text;
+
+                  if (!(serie in datasets)) datasets[serie] = {};
+                  datasets[serie][fulldata[j].rows[i][1]] = fulldata[j].rows[i][2];
+                }
+              }
+              //      console.log("LABELS="+JSON.stringify(labels))
+            } else {
+              for (var i = 0; i < fulldata[0].rows.length; i++) {
+
+                if (fulldata[0].rows[i].length > 2) // more than 1 aggregation
+                  {
+
+                    if (!(fulldata[0].rows[i][0] in labels)) labels[fulldata[0].rows[i][0]] = true;
+                    if (!(fulldata[0].rows[i][1] in datasets)) datasets[fulldata[0].rows[i][1]] = {};
+                    datasets[fulldata[0].rows[i][1]][fulldata[0].rows[i][0]] = fulldata[0].rows[i][2];
+                  } else {
+                  if (!(fulldata[0].rows[i][0] in labels)) labels[fulldata[0].rows[i][0]] = true;
+
+                  var serie = fulldata[0]["columns"][0].text;
+
+                  if (!(serie in datasets)) datasets[serie] = {};
+                  datasets[serie][fulldata[0].rows[i][0]] = fulldata[0].rows[i][1];
+                }
               }
             }
 
@@ -285,7 +316,7 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
           value: function onDataReceived(dataList) {
             var newseries = [];
 
-            //console.log(JSON.stringify(dataList))
+            //    console.log(JSON.stringify(dataList))
 
             this.data = {
               labels: ['Running', 'Swimming', 'Eating', 'Cycling', 'Sleeping'],
@@ -304,12 +335,12 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
 
             var fulldata = dataList;
 
-            if (fulldata.length == 1 && "columnMap" in fulldata[0]) {
+            if (fulldata.length >= 1 && "columnMap" in fulldata[0]) {
               this.decodeNonHistoricalData(fulldata);
             } else {
               this.decodeHistoricalData(fulldata);
             }
-
+            //    console.log("DATA:"+JSON.stringify(this.data))
             this.render();
           }
         }, {

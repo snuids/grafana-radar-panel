@@ -18,12 +18,12 @@ import './Chart.js'
   };
 })*/
 
-/*angular.module('grafana.directives').directive('customLabel', function () {  
-  return {  
+/*angular.module('grafana.directives').directive('customLabel', function () {
+  return {
 
-      restrict: 'EA',  
-      template: '<div class="jumbotron"><h2>My First Directive</h2><p>This is a simple example.</p></div>'  
-  }  
+      restrict: 'EA',
+      template: '<div class="jumbotron"><h2>My First Directive</h2><p>This is a simple example.</p></div>'
+  }
 })*/
 
 const panelDefaults = {
@@ -33,7 +33,8 @@ const panelDefaults = {
     fontColor: 'gray',
     gridColor: 'gray',
     fontSize: 14,
-    legendType: 'right'
+    legendType: 'right',
+    ignoreTimeInfluxDB: false
   }
 };
 
@@ -59,9 +60,9 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     this.canvasid = ("id" + (Math.random() * 100000)).replace('.', '')
 
     this.ctx = null;
-    this.radar=null;
+    this.radar = null;
 
-    this.currentOptions=null;
+    this.currentOptions = null;
 
     this.updateRadar();
 
@@ -96,196 +97,219 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
           color: this.panel.radarSettings.gridColor
         },
         pointLabels: {
-          fontSize:parseInt(this.panel.radarSettings.fontSize),
+          fontSize: parseInt(this.panel.radarSettings.fontSize),
           fontColor: this.panel.radarSettings.fontColor
         },
       }
     }
 
-    if(this.currentOptions==null)
-      this.currentOptions=JSON.stringify(this.options);
+    if (this.currentOptions == null)
+      this.currentOptions = JSON.stringify(this.options);
 
 
     if (this.ctx == null)
-      if(document.getElementById(this.canvasid)!=null)
+      if (document.getElementById(this.canvasid) != null)
         this.ctx = document.getElementById(this.canvasid).getContext('2d');
 
     if (this.ctx != null) {
-      if(this.radar==null)
-      {
+      if (this.radar == null) {
         this.radar = new Chart(this.ctx, {
           type: 'radar',
           data: this.data,
           options: this.options
 
         });
-      }
-      else
-      {     
-        if(this.currentOptions!=JSON.stringify(this.options))
-        {
+      } else {
+        if (this.currentOptions != JSON.stringify(this.options)) {
           console.log("Recreate radar graph.");
-          this.currentOptions=JSON.stringify(this.options);
-          if (this.ctx != null)
-          {
-            if (this.radar!=null)
-            {              
+          this.currentOptions = JSON.stringify(this.options);
+          if (this.ctx != null) {
+            if (this.radar != null) {
               this.radar.destroy();
-              $("canvas#"+this.canvasid).remove();              
-              $("div#panel"+this.canvasid).append('<canvas id="'+this.canvasid+'"></canvas>');              
+              $("canvas#" + this.canvasid).remove();
+              $("div#panel" + this.canvasid).append('<canvas id="' + this.canvasid + '"></canvas>');
               this.ctx = document.getElementById(this.canvasid).getContext('2d');
-              
+
             }
             this.radar = new Chart(this.ctx, {
               type: 'radar',
               data: this.data,
               options: this.options
-    
+
             });
           }
         }
-        
-        this.radar.data=this.data;
+
+        this.radar.data = this.data;
         this.radar.update();
-        
+
       }
     }
   }
 
-  decodeNonHistoricalData(fulldata)
-  {
-    var labels={}
-    var datasets={}
-  
-    
-    for (var i=0;i<fulldata[0].rows.length;i++)
-    {
-      if(fulldata[0].rows[i].length>2)  // more than 1 aggregation
-      {
-    
-        if(!(fulldata[0].rows[i][0] in labels))
-          labels[fulldata[0].rows[i][0]]=true;
-        if(!(fulldata[0].rows[i][1] in datasets))
-          datasets[fulldata[0].rows[i][1]]={}
-        datasets[fulldata[0].rows[i][1]][fulldata[0].rows[i][0]]=fulldata[0].rows[i][2]
-      }
-      else
-      {
-        if(!(fulldata[0].rows[i][0] in labels))
-          labels[fulldata[0].rows[i][0]]=true;
-        
-        var serie=fulldata[0]["columns"][0].text;
-    
-        
-        if(!(serie in datasets))
-          datasets[serie]={}
-        datasets[serie][fulldata[0].rows[i][0]]=fulldata[0].rows[i][1]
-      }
-    }
-  
-    var finaldatasets=[]
-    var finallabels=[]
-    
-    for(var key in labels)
-        finallabels.push(key);
-    
-    var i=0;
+  decodeNonHistoricalData(fulldata) {
+    var labels = {}
+    var datasets = {}
 
-    for(var key in datasets)
-    {
-      var newdata=[]
-      for(var key2 in labels)
-        if(key2 in datasets[key])
-          newdata.push(datasets[key][key2]);
-        else
-          newdata.push(0);
-  
-      finaldatasets.push(
-        {
-          label:key
-          ,data:newdata
-          ,backgroundColor: this.addTransparency(this.$rootScope.colors[i],0.2),//'rgba(54, 162, 235, 0.2)',
-          borderColor: this.$rootScope.colors[i]//'rgb(54, 162, 235)'
-        }
-      );
-      i++;
-    }
-  
-    var finaldata={
-        labels:finallabels,
-        datasets:finaldatasets
-      }
-        //alert(JSON.stringify(finaldata))
-    this.data=finaldata;
-  }
+    var ignoretimeinfluxdn = this.panel.radarSettings.ignoreTimeInfluxDB;
 
-  decodeHistoricalData(fulldata)
-  {
-    var labels={}
-    var datasets={}
-    
-  
-    for(var i=0;i<fulldata.length;i++)
+    if(ignoretimeinfluxdn)
     {
-      var j=0;
-      var curkey='';
-      for (var key in fulldata[i].props)
+//      console.log('IGNORING')
+      for (var i = 0; i < fulldata[0].rows.length; i++)
       {
-        if(j==0)
+        if (!(fulldata[0].rows[i][1] in labels))
+          labels[fulldata[0].rows[i][1]] = true;
+
+          var serie='NA';
+          
+          if(fulldata[0]["columns"].length>2)
+            serie= fulldata[0]["columns"][2].text;
+          else
+            serie = fulldata[0]["columns"][0].text;
+
+        if (!(serie in datasets))
+          datasets[serie] = {}
+        datasets[serie][fulldata[0].rows[i][1]] = fulldata[0].rows[i][2]
+      }
+      for(var j=1;j<fulldata.length; j++)
+      {
+        for (var i = 0; i < fulldata[j].rows.length; i++)
         {
-          labels[fulldata[i].props[key]]=true;
-          curkey=fulldata[i].props[key];
+          if (!(fulldata[j].rows[i][1] in labels))
+            labels[fulldata[j].rows[i][1]] = true;
+  
+          var serie='NA';
+          
+          if(fulldata[j]["columns"].length>2)
+            serie= fulldata[j]["columns"][2].text;
+          else
+            serie = fulldata[j]["columns"][0].text;
+  
+          if (!(serie in datasets))
+            datasets[serie] = {}
+          datasets[serie][fulldata[j].rows[i][1]] = fulldata[j].rows[i][2]
         }
-        else if(j==1)
+      }
+//      console.log("LABELS="+JSON.stringify(labels))
+    }     
+    else
+    {
+      for (var i = 0; i < fulldata[0].rows.length; i++) {
+        
+        if (fulldata[0].rows[i].length > 2) // more than 1 aggregation
         {
-           if(!(fulldata[i].props[key] in datasets))
-            datasets[fulldata[i].props[key]]={};
-          datasets[fulldata[i].props[key]][curkey]=(fulldata[i].datapoints.slice(-1))[0][0];
+
+          if (!(fulldata[0].rows[i][0] in labels))
+            labels[fulldata[0].rows[i][0]] = true;
+          if (!(fulldata[0].rows[i][1] in datasets))
+            datasets[fulldata[0].rows[i][1]] = {}
+          datasets[fulldata[0].rows[i][1]][fulldata[0].rows[i][0]] = fulldata[0].rows[i][2]
+        } else {
+          if (!(fulldata[0].rows[i][0] in labels))
+            labels[fulldata[0].rows[i][0]] = true;
+
+          var serie = fulldata[0]["columns"][0].text;
+
+
+          if (!(serie in datasets))
+            datasets[serie] = {}
+          datasets[serie][fulldata[0].rows[i][0]] = fulldata[0].rows[i][1]
         }
-        j=j+1;
       }
     }
-    var finallabels=[]
-    var finaldatasets=[]
-    
-    for(key in labels)
+
+    var finaldatasets = []
+    var finallabels = []
+
+    for (var key in labels)
       finallabels.push(key);
-    
-    var i=0;
 
-    for(key in datasets)
-    {
-      var newdata=[]
-      for(var key2 in labels)
-        if(key2 in datasets[key])
+    var i = 0;
+
+    for (var key in datasets) {
+      var newdata = []
+      for (var key2 in labels)
+        if (key2 in datasets[key])
           newdata.push(datasets[key][key2]);
         else
           newdata.push(0);
-    
-      finaldatasets.push(
-      {
-        label:key
-        ,data:newdata
-        ,backgroundColor: this.addTransparency(this.$rootScope.colors[i],0.2),//'rgba(54, 162, 235, 0.2)',
-              borderColor: this.$rootScope.colors[i]//'rgb(54, 162, 235)'
-      }
-      );
+
+      finaldatasets.push({
+        label: key,
+        data: newdata,
+        backgroundColor: this.addTransparency(this.$rootScope.colors[i], 0.2), //'rgba(54, 162, 235, 0.2)',
+        borderColor: this.$rootScope.colors[i] //'rgb(54, 162, 235)'
+      });
       i++;
     }
-    
-    var finaldata={
-      labels:finallabels,
-      datasets:finaldatasets
+
+    var finaldata = {
+      labels: finallabels,
+      datasets: finaldatasets
+    }
+    //alert(JSON.stringify(finaldata))
+    this.data = finaldata;
+  }
+
+  decodeHistoricalData(fulldata) {
+    var labels = {}
+    var datasets = {}
+
+
+    for (var i = 0; i < fulldata.length; i++) {
+      var j = 0;
+      var curkey = '';
+      for (var key in fulldata[i].props) {
+        if (j == 0) {
+          labels[fulldata[i].props[key]] = true;
+          curkey = fulldata[i].props[key];
+        } else if (j == 1) {
+          if (!(fulldata[i].props[key] in datasets))
+            datasets[fulldata[i].props[key]] = {};
+          datasets[fulldata[i].props[key]][curkey] = (fulldata[i].datapoints.slice(-1))[0][0];
+        }
+        j = j + 1;
+      }
+    }
+    var finallabels = []
+    var finaldatasets = []
+
+    for (key in labels)
+      finallabels.push(key);
+
+    var i = 0;
+
+    for (key in datasets) {
+      var newdata = []
+      for (var key2 in labels)
+        if (key2 in datasets[key])
+          newdata.push(datasets[key][key2]);
+        else
+          newdata.push(0);
+
+      finaldatasets.push({
+        label: key,
+        data: newdata,
+        backgroundColor: this.addTransparency(this.$rootScope.colors[i], 0.2), //'rgba(54, 162, 235, 0.2)',
+        borderColor: this.$rootScope.colors[i] //'rgb(54, 162, 235)'
+      });
+      i++;
     }
 
-    
-    this.data=finaldata;
+    var finaldata = {
+      labels: finallabels,
+      datasets: finaldatasets
+    }
+
+
+    this.data = finaldata;
   }
 
   onDataReceived(dataList) {
     var newseries = []
 
-    //console.log(JSON.stringify(dataList))
+//    console.log(JSON.stringify(dataList))
 
     this.data = {
       labels: ['Running', 'Swimming', 'Eating', 'Cycling', 'Sleeping'],
@@ -304,17 +328,14 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
       ]
     }
 
-    var fulldata=dataList;
+    var fulldata = dataList;
 
-    if(fulldata.length==1 && ("columnMap" in fulldata[0]))
-    {
+    if (fulldata.length >= 1 && ("columnMap" in fulldata[0])) {
       this.decodeNonHistoricalData(fulldata);
-    }
-    else
-    {
+    } else {
       this.decodeHistoricalData(fulldata);
     }
-
+//    console.log("DATA:"+JSON.stringify(this.data))
     this.render();
   }
 
@@ -341,18 +362,18 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
   }
 
 
-  addTransparency(col,transp) {
-      if ( col[0] == "#" ) {
-          col = col.slice(1);
-      }
+  addTransparency(col, transp) {
+    if (col[0] == "#") {
+      col = col.slice(1);
+    }
 
-      var num = parseInt(col,16);
+    var num = parseInt(col, 16);
 
-      var r = (num >> 16) ;
-      var g = ((num >> 8) & 0x00FF);
-      var b = (num & 0x0000FF);
+    var r = (num >> 16);
+    var g = ((num >> 8) & 0x00FF);
+    var b = (num & 0x0000FF);
 
-      return 'rgba('+r+','+g+','+b+','+transp+')';
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + transp + ')';
   }
 
 

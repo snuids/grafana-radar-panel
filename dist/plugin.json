@@ -7,7 +7,7 @@
     "description": "Radar Graph for grafana",
     "author": {
       "name": "snuids",
-      "url": "https://github.com/snuids/radargraph-panel"
+      "url": "https://github.com/snuids/grafana-radar-panel"
     },
     "keywords": ["radar", "panel"],
     "logos": {
@@ -15,13 +15,13 @@
       "large": "src/img/radar_logo.jpg"
     },
     "links": [
-      {"name": "Project site", "url": "https://github.com/snuids/trafficlights-panel"},
-      {"name": "MIT License", "url": "https://github.com/snuids/trafficlights-panel"}
+      {"name": "Project site", "url": "https://github.com/snuids/grafana-radar-panel"},
+      {"name": "MIT License", "url": "https://github.com/snuids/grafana-radar-panel"}
     ],
     "screenshots": [
       {"name": "Showcase", "path": "src/img/screenshot-radar-showcase.jpg"},
       {"name": "Showcase", "path": "src/img/screenshot-radar-showcase2.jpg"},
-      {"name": "Options", "path": "src/img/screenshot-radar-options.jpg"}
+      {"name": "Options", "path": "src/img/screenshot-traffic-options.jpg"}
     ],
     "version": "0.1.0",
     "updated": "2017-10-14"
