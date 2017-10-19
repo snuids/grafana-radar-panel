@@ -32,6 +32,8 @@ The panel datasource must include a single query having the following characteri
 
 ### Influx DB Configuration
 
+Note that the checkbox Ingnore TIME (InfluxDB) checkbox must be checked in the Options panel.
+
 ![Radar](https://raw.githubusercontent.com/snuids/grafana-radar-panel/master/src/img/screenshot-radar-metrics3.jpg)
 
 
