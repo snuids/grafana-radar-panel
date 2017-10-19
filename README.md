@@ -38,3 +38,8 @@ The panel datasource must include a single query having the following characteri
 ## Panel Options
 
 ![Radar](https://raw.githubusercontent.com/snuids/grafana-radar-panel/master/src/img/screenshot-radar-options.jpg)
+
+# Versions
+## v1.1.0 (19/Oct/2017)
+- First Version Compatible with InfluxDB
+
