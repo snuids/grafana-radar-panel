@@ -23,8 +23,8 @@
       {"name": "Showcase", "path": "src/img/screenshot-radar-showcase2.jpg"},
       {"name": "Options", "path": "src/img/screenshot-traffic-options.jpg"}
     ],
-    "version": "0.1.0",
-    "updated": "2017-10-14"
+    "version": "1.1.0",
+    "updated": "2017-10-19"
   },
 
   "dependencies": {
