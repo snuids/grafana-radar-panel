@@ -1,7 +1,7 @@
 {
   "type": "panel",
   "name": "Radar Graph",
-  "id": "grafana-radar-panel",
+  "id": "snuids-radar-panel",
 
   "info": {
     "description": "Radar Graph for grafana",
@@ -21,10 +21,13 @@
     "screenshots": [
       {"name": "Showcase", "path": "src/img/screenshot-radar-showcase.jpg"},
       {"name": "Showcase", "path": "src/img/screenshot-radar-showcase2.jpg"},
-      {"name": "Options", "path": "src/img/screenshot-traffic-options.jpg"}
+      {"name": "Options", "path": "src/img/screenshot-radar-options.jpg"},
+      {"name": "Options", "path": "src/img/screenshot-radar-metrics.jpg"},
+      {"name": "Options", "path": "src/img/screenshot-radar-metrics2.jpg"},
+      {"name": "Options", "path": "src/img/screenshot-radar-metrics3.jpg"}
     ],
-    "version": "0.1.0",
-    "updated": "2017-10-14"
+    "version": "1.2.0",
+    "updated": "2017-10-27"
   },
 
   "dependencies": {

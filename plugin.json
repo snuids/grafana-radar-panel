@@ -26,8 +26,8 @@
       {"name": "Options", "path": "src/img/screenshot-radar-metrics2.jpg"},
       {"name": "Options", "path": "src/img/screenshot-radar-metrics3.jpg"}
     ],
-    "version": "1.1.0",
-    "updated": "2017-10-19"
+    "version": "1.2.0",
+    "updated": "2017-10-27"
   },
 
   "dependencies": {
