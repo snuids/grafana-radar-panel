@@ -162,7 +162,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
           labels[fulldata[0].rows[i][1]] = true;
 
           var serie='NA';
-          
+
           if(fulldata[0]["columns"].length>2)
             serie= fulldata[0]["columns"][2].text;
           else
@@ -178,25 +178,25 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
         {
           if (!(fulldata[j].rows[i][1] in labels))
             labels[fulldata[j].rows[i][1]] = true;
-  
+
           var serie='NA';
-          
+
           if(fulldata[j]["columns"].length>2)
             serie= fulldata[j]["columns"][2].text;
           else
             serie = fulldata[j]["columns"][0].text;
-  
+
           if (!(serie in datasets))
             datasets[serie] = {}
           datasets[serie][fulldata[j].rows[i][1]] = fulldata[j].rows[i][2]
         }
       }
 //      console.log("LABELS="+JSON.stringify(labels))
-    }     
+    }
     else
     {
       for (var i = 0; i < fulldata[0].rows.length; i++) {
-        
+
         if (fulldata[0].rows[i].length > 2) // more than 1 aggregation
         {
 
@@ -349,7 +349,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
 
   onInitEditMode() {
 
-    this.addEditorTab('Options', 'public/plugins/grafana-radar-panel/editor.html', 2);
+    this.addEditorTab('Options', 'public/plugins/snuids-radar-panel/editor.html', 2);
   }
 
   onPanelTeardown() {
