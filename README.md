@@ -45,3 +45,6 @@ Note that the checkbox Ingnore TIME (InfluxDB) checkbox must be checked in the O
 ## v1.1.0 (19/Oct/2017)
 - First Version Compatible with InfluxDB
 
+## v1.2.0 (27/Oct/2017)
+- Panel renamed to snuids-radar-panel. (Edit your panels plugin id when upgrading from 1.1.0)
+
