@@ -72,7 +72,9 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
           gridColor: 'gray',
           fontSize: 14,
           legendType: 'right',
-          ignoreTimeInfluxDB: false
+          ignoreTimeInfluxDB: false,
+          limitAspectRatio: true,
+          aspectRatio: 2.2
         }
       };
 
@@ -108,7 +110,6 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
           _this.currentOptions = null;
 
           _this.updateRadar();
-
           return _this;
         }
 
@@ -179,7 +180,6 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
                     });
                   }
                 }
-
                 this.radar.data = this.data;
                 this.radar.update();
               }
@@ -287,7 +287,7 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
             var finallabels = [];
             var finaldatasets = [];
 
-            for (key in labels) {
+            for (var key in labels) {
               finallabels.push(key);
             }var i = 0;
 

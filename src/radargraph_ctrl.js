@@ -8,24 +8,6 @@ import TimeSeries from 'app/core/time_series';
 import './css/radargraph-panel.css!';
 import './Chart.js'
 
-/*angular.module('grafana.directives').directive('radarElement', function () {
-  return {
-      restrict:"A", // E-Element A-Attribute C-Class M-Comments
-      replace: false,
-      link: function($scope, elem, attrs) {
-          $scope[attrs.radarElement] = elem[0];
-      }
-  };
-})*/
-
-/*angular.module('grafana.directives').directive('customLabel', function () {
-  return {
-
-      restrict: 'EA',
-      template: '<div class="jumbotron"><h2>My First Directive</h2><p>This is a simple example.</p></div>'
-  }
-})*/
-
 const panelDefaults = {
   bgColor: null,
 
@@ -34,7 +16,9 @@ const panelDefaults = {
     gridColor: 'gray',
     fontSize: 14,
     legendType: 'right',
-    ignoreTimeInfluxDB: false
+    ignoreTimeInfluxDB: false,
+    limitAspectRatio:true,
+    aspectRatio:2.2
   }
 };
 
@@ -56,7 +40,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
 
     this.percentPerLight = 100;
 
-    this.data = []
+    this.data = [];
     this.canvasid = ("id" + (Math.random() * 100000)).replace('.', '')
 
     this.ctx = null;
@@ -65,7 +49,6 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     this.currentOptions = null;
 
     this.updateRadar();
-
   }
 
 
@@ -101,7 +84,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
           fontColor: this.panel.radarSettings.fontColor
         },
       }
-    }
+    };
 
     if (this.currentOptions == null)
       this.currentOptions = JSON.stringify(this.options);
@@ -139,50 +122,44 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
             });
           }
         }
-
         this.radar.data = this.data;
         this.radar.update();
-
       }
     }
   }
 
   decodeNonHistoricalData(fulldata) {
-    var labels = {}
-    var datasets = {}
+    var labels = {};
+    var datasets = {};
 
     var ignoretimeinfluxdn = this.panel.radarSettings.ignoreTimeInfluxDB;
 
-    if(ignoretimeinfluxdn)
-    {
-//      console.log('IGNORING')
-      for (var i = 0; i < fulldata[0].rows.length; i++)
-      {
+    if (ignoretimeinfluxdn) {
+      //      console.log('IGNORING')
+      for (var i = 0; i < fulldata[0].rows.length; i++) {
         if (!(fulldata[0].rows[i][1] in labels))
           labels[fulldata[0].rows[i][1]] = true;
 
-          var serie='NA';
+        var serie = 'NA';
 
-          if(fulldata[0]["columns"].length>2)
-            serie= fulldata[0]["columns"][2].text;
-          else
-            serie = fulldata[0]["columns"][0].text;
+        if (fulldata[0]["columns"].length > 2)
+          serie = fulldata[0]["columns"][2].text;
+        else
+          serie = fulldata[0]["columns"][0].text;
 
         if (!(serie in datasets))
-          datasets[serie] = {}
+          datasets[serie] = {};
         datasets[serie][fulldata[0].rows[i][1]] = fulldata[0].rows[i][2]
       }
-      for(var j=1;j<fulldata.length; j++)
-      {
-        for (var i = 0; i < fulldata[j].rows.length; i++)
-        {
+      for (var j = 1; j < fulldata.length; j++) {
+        for (var i = 0; i < fulldata[j].rows.length; i++) {
           if (!(fulldata[j].rows[i][1] in labels))
             labels[fulldata[j].rows[i][1]] = true;
 
-          var serie='NA';
+          var serie = 'NA';
 
-          if(fulldata[j]["columns"].length>2)
-            serie= fulldata[j]["columns"][2].text;
+          if (fulldata[j]["columns"].length > 2)
+            serie = fulldata[j]["columns"][2].text;
           else
             serie = fulldata[j]["columns"][0].text;
 
@@ -191,10 +168,8 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
           datasets[serie][fulldata[j].rows[i][1]] = fulldata[j].rows[i][2]
         }
       }
-//      console.log("LABELS="+JSON.stringify(labels))
-    }
-    else
-    {
+      //      console.log("LABELS="+JSON.stringify(labels))
+    } else {
       for (var i = 0; i < fulldata[0].rows.length; i++) {
 
         if (fulldata[0].rows[i].length > 2) // more than 1 aggregation
@@ -203,8 +178,8 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
           if (!(fulldata[0].rows[i][0] in labels))
             labels[fulldata[0].rows[i][0]] = true;
           if (!(fulldata[0].rows[i][1] in datasets))
-            datasets[fulldata[0].rows[i][1]] = {}
-          datasets[fulldata[0].rows[i][1]][fulldata[0].rows[i][0]] = fulldata[0].rows[i][2]
+            datasets[fulldata[0].rows[i][1]] = {};
+          datasets[fulldata[0].rows[i][1]][fulldata[0].rows[i][0]] = fulldata[0].rows[i][2];
         } else {
           if (!(fulldata[0].rows[i][0] in labels))
             labels[fulldata[0].rows[i][0]] = true;
@@ -214,7 +189,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
 
           if (!(serie in datasets))
             datasets[serie] = {}
-          datasets[serie][fulldata[0].rows[i][0]] = fulldata[0].rows[i][1]
+          datasets[serie][fulldata[0].rows[i][0]] = fulldata[0].rows[i][1];
         }
       }
     }
@@ -228,7 +203,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     var i = 0;
 
     for (var key in datasets) {
-      var newdata = []
+      var newdata = [];
       for (var key2 in labels)
         if (key2 in datasets[key])
           newdata.push(datasets[key][key2]);
@@ -253,8 +228,8 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
   }
 
   decodeHistoricalData(fulldata) {
-    var labels = {}
-    var datasets = {}
+    var labels = {};
+    var datasets = {};
 
 
     for (var i = 0; i < fulldata.length; i++) {
@@ -275,13 +250,13 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     var finallabels = []
     var finaldatasets = []
 
-    for (key in labels)
+    for (var key in labels)
       finallabels.push(key);
 
     var i = 0;
 
     for (key in datasets) {
-      var newdata = []
+      var newdata = [];
       for (var key2 in labels)
         if (key2 in datasets[key])
           newdata.push(datasets[key][key2]);
@@ -307,9 +282,9 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
   }
 
   onDataReceived(dataList) {
-    var newseries = []
+    var newseries = [];
 
-//    console.log(JSON.stringify(dataList))
+    //    console.log(JSON.stringify(dataList))
 
     this.data = {
       labels: ['Running', 'Swimming', 'Eating', 'Cycling', 'Sleeping'],
@@ -335,7 +310,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     } else {
       this.decodeHistoricalData(fulldata);
     }
-//    console.log("DATA:"+JSON.stringify(this.data))
+    //    console.log("DATA:"+JSON.stringify(this.data))
     this.render();
   }
 
