@@ -17,6 +17,7 @@ Copy the dist folder in your grafana plugin directory and rename it to radarpane
 
 ![Radar](https://raw.githubusercontent.com/snuids/grafana-radar-panel/master/src/img/screenshot-radar-showcase.jpg)
 ![Radar](https://raw.githubusercontent.com/snuids/grafana-radar-panel/master/src/img/screenshot-radar-showcase2.jpg)
+![Radar](https://raw.githubusercontent.com/snuids/grafana-radar-panel/master/src/img/screenshot-radar-showcase3.jpg)
 
 ## Metrics Configuration
 
@@ -36,6 +37,11 @@ Note that the checkbox Ingnore TIME (InfluxDB) checkbox must be checked in the O
 
 ![Radar](https://raw.githubusercontent.com/snuids/grafana-radar-panel/master/src/img/screenshot-radar-metrics3.jpg)
 
+### PostGreSQL configuration
+
+Note the graph displays the last value of each time serie.
+
+![Radar](https://raw.githubusercontent.com/snuids/grafana-radar-panel/master/src/img/screenshot-radar-metrics4.jpg)
 
 ## Panel Options
 
@@ -51,3 +57,5 @@ Note that the checkbox Ingnore TIME (InfluxDB) checkbox must be checked in the O
 ## v1.3.0 (01/Nov/2017)
 - Aspect ratio option added in order to limit the height of the graph
 
+## v1.4.0 (10/Dec/2017)
+- PostGreSQL support added

@@ -17,8 +17,8 @@ const panelDefaults = {
     fontSize: 14,
     legendType: 'right',
     ignoreTimeInfluxDB: false,
-    limitAspectRatio:true,
-    aspectRatio:2.2
+    limitAspectRatio: true,
+    aspectRatio: 2.2
   }
 };
 
@@ -51,17 +51,12 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     this.updateRadar();
   }
 
-
-
   onDataError() {
     this.series = [];
     this.render();
   }
 
   onRender() {
-    //console.log("On Render");
-
-
     this.options = {
       legend: {
         display: true,
@@ -227,7 +222,65 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     this.data = finaldata;
   }
 
+  //***************************************************
+  // DECODE POSTGRESQL data source data
+  //***************************************************
+  decodeHistoricalDataSQL(fulldata) {
+    var finallabels = [];
+    var finallabelsht = {};
+    var datasets = [];
+    var datasetstemp = {};
+
+    for (var i = 0; i < fulldata.length; i++) {
+      if (!finallabelsht.hasOwnProperty(fulldata[i].target)) {
+        finallabelsht[fulldata[i].target] = fulldata[i].target;
+        finallabels.push(fulldata[i].target);
+      }
+      if (!datasetstemp.hasOwnProperty(fulldata[i].refId)) {
+        datasetstemp[fulldata[i].refId] = {};
+      }
+      if (fulldata[i].datapoints.length > 1) {
+        var lastpoint = fulldata[i].datapoints[fulldata[i].datapoints.length - 1];
+        datasetstemp[fulldata[i].refId][fulldata[i].target] = lastpoint[0]
+      }
+    }
+    var count=0
+    for (var ds in datasetstemp) {
+      var points = [];
+      for (var ind in finallabels) {
+        i = finallabels[ind]
+        if (datasetstemp[ds].hasOwnProperty(i))
+          points.push(datasetstemp[ds][i]);
+        else
+          points.push(0);
+      }
+      var dataset = {}
+      dataset.label = ds;
+      dataset.data = points;
+      dataset.backgroundColor= this.addTransparency(this.$rootScope.colors[count], 0.2); //'rgba(54, 162, 235, 0.2)',
+      dataset.borderColor= this.$rootScope.colors[count];
+
+      datasets.push(dataset);
+      count++;
+    }
+
+    var finaldata = {
+      labels: finallabels,
+      datasets: datasets
+    };
+    this.data = finaldata;
+  }
+
+  //***************************************************
+  // DECODE hsitorical data
+  //***************************************************
   decodeHistoricalData(fulldata) {
+
+    if ((fulldata.length > 0) && (fulldata[0].target != null)) {
+      console.log("PSQL detected");
+      return this.decodeHistoricalDataSQL(fulldata);
+    }
+    console.log("PSQL not detected");
     var labels = {};
     var datasets = {};
 
@@ -247,8 +300,8 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
         j = j + 1;
       }
     }
-    var finallabels = []
-    var finaldatasets = []
+    var finallabels = [];
+    var finaldatasets = [];
 
     for (var key in labels)
       finallabels.push(key);
@@ -275,17 +328,18 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     var finaldata = {
       labels: finallabels,
       datasets: finaldatasets
-    }
+    };
 
 
     this.data = finaldata;
   }
 
+  //***************************************************
+  // Data received
+  //***************************************************
   onDataReceived(dataList) {
     var newseries = [];
-
-    //    console.log(JSON.stringify(dataList))
-
+    
     this.data = {
       labels: ['Running', 'Swimming', 'Eating', 'Cycling', 'Sleeping'],
       datasets: [{
@@ -301,7 +355,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
           borderColor: 'rgb(235, 162, 54)'
         }
       ]
-    }
+    };
 
     var fulldata = dataList;
 
@@ -310,10 +364,12 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     } else {
       this.decodeHistoricalData(fulldata);
     }
-    //    console.log("DATA:"+JSON.stringify(this.data))
     this.render();
   }
 
+  //***************************************************
+  // seriesHandler
+  //***************************************************
   seriesHandler(seriesData) {
     var series = new TimeSeries({
       datapoints: seriesData.datapoints,
@@ -323,7 +379,6 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
   }
 
   onInitEditMode() {
-
     this.addEditorTab('Options', 'public/plugins/snuids-radar-panel/editor.html', 2);
   }
 
@@ -332,7 +387,6 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
   }
 
   updateRadar() {
-
     this.nextTickPromise = this.$timeout(this.updateRadar.bind(this), 1000);
   }
 
@@ -350,8 +404,6 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
 
     return 'rgba(' + r + ',' + g + ',' + b + ',' + transp + ')';
   }
-
-
 
   link(scope, elem) {
     this.events.on('render', () => {

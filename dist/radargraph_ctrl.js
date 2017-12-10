@@ -122,9 +122,6 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
         }, {
           key: 'onRender',
           value: function onRender() {
-            //console.log("On Render");
-
-
             this.options = {
               legend: {
                 display: true,
@@ -265,8 +262,58 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
             };this.data = finaldata;
           }
         }, {
+          key: 'decodeHistoricalDataSQL',
+          value: function decodeHistoricalDataSQL(fulldata) {
+            var finallabels = [];
+            var finallabelsht = {};
+            var datasets = [];
+            var datasetstemp = {};
+
+            for (var i = 0; i < fulldata.length; i++) {
+              if (!finallabelsht.hasOwnProperty(fulldata[i].target)) {
+                finallabelsht[fulldata[i].target] = fulldata[i].target;
+                finallabels.push(fulldata[i].target);
+              }
+              if (!datasetstemp.hasOwnProperty(fulldata[i].refId)) {
+                datasetstemp[fulldata[i].refId] = {};
+              }
+              if (fulldata[i].datapoints.length > 1) {
+                var lastpoint = fulldata[i].datapoints[fulldata[i].datapoints.length - 1];
+                datasetstemp[fulldata[i].refId][fulldata[i].target] = lastpoint[0];
+              }
+            }
+            var count = 0;
+            for (var ds in datasetstemp) {
+              var points = [];
+              for (var ind in finallabels) {
+                i = finallabels[ind];
+                if (datasetstemp[ds].hasOwnProperty(i)) points.push(datasetstemp[ds][i]);else points.push(0);
+              }
+              var dataset = {};
+              dataset.label = ds;
+              dataset.data = points;
+              dataset.backgroundColor = this.addTransparency(this.$rootScope.colors[count], 0.2); //'rgba(54, 162, 235, 0.2)',
+              dataset.borderColor = this.$rootScope.colors[count];
+
+              datasets.push(dataset);
+              count++;
+            }
+
+            var finaldata = {
+              labels: finallabels,
+              datasets: datasets
+            };
+            this.data = finaldata;
+          }
+        }, {
           key: 'decodeHistoricalData',
           value: function decodeHistoricalData(fulldata) {
+
+            if (fulldata.length > 0 && fulldata[0].target != null) {
+              console.log("PSQL detected");
+              return this.decodeHistoricalDataSQL(fulldata);
+            }
+            console.log("PSQL not detected");
             var labels = {};
             var datasets = {};
 
@@ -316,8 +363,6 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
           value: function onDataReceived(dataList) {
             var newseries = [];
 
-            //    console.log(JSON.stringify(dataList))
-
             this.data = {
               labels: ['Running', 'Swimming', 'Eating', 'Cycling', 'Sleeping'],
               datasets: [{
@@ -340,7 +385,6 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
             } else {
               this.decodeHistoricalData(fulldata);
             }
-            //    console.log("DATA:"+JSON.stringify(this.data))
             this.render();
           }
         }, {
@@ -355,7 +399,6 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
         }, {
           key: 'onInitEditMode',
           value: function onInitEditMode() {
-
             this.addEditorTab('Options', 'public/plugins/snuids-radar-panel/editor.html', 2);
           }
         }, {
@@ -366,7 +409,6 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
         }, {
           key: 'updateRadar',
           value: function updateRadar() {
-
             this.nextTickPromise = this.$timeout(this.updateRadar.bind(this), 1000);
           }
         }, {
