@@ -59,3 +59,6 @@ Note the graph displays the last value of each time serie.
 
 ## v1.4.0 (10/Dec/2017)
 - PostGreSQL support added
+
+## v1.4.1 (12/Dec/2017)
+- Fixed a bug that prevents the graph to be corrrectly displayed when the serie has only one point. (Thx shizacat) 

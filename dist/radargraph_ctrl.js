@@ -277,7 +277,7 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
               if (!datasetstemp.hasOwnProperty(fulldata[i].refId)) {
                 datasetstemp[fulldata[i].refId] = {};
               }
-              if (fulldata[i].datapoints.length > 1) {
+              if (fulldata[i].datapoints.length >= 1) {
                 var lastpoint = fulldata[i].datapoints[fulldata[i].datapoints.length - 1];
                 datasetstemp[fulldata[i].refId][fulldata[i].target] = lastpoint[0];
               }
