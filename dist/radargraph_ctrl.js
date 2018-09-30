@@ -74,7 +74,8 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
           legendType: 'right',
           ignoreTimeInfluxDB: false,
           limitAspectRatio: true,
-          aspectRatio: 2.2
+          aspectRatio: 2.2,
+          seriesAlias: ''
         }
       };
 
@@ -243,6 +244,7 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
             }var i = 0;
 
             for (var key in datasets) {
+
               var newdata = [];
               for (var key2 in labels) {
                 if (key2 in datasets[key]) newdata.push(datasets[key][key2]);else newdata.push(0);
@@ -282,15 +284,33 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
                 datasetstemp[fulldata[i].refId][fulldata[i].target] = lastpoint[0];
               }
             }
+
+            // loads alias
+            var seriesAliasTable = [];
+            if (this.panel.radarSettings.seriesAlias != null) seriesAliasTable = this.panel.radarSettings.seriesAlias.split(";");
+
+            var seriesAliasHT = {};
+
+            for (var j in seriesAliasTable) {
+              var alias = seriesAliasTable[j].split('=');
+              if (alias.length > 1) {
+                seriesAliasHT[alias[0]] = alias[1];
+              }
+            }
+
             var count = 0;
             for (var ds in datasetstemp) {
+
+              var ds2 = ds;
+              if (seriesAliasHT[ds] != null) ds2 = seriesAliasHT[ds];
+
               var points = [];
               for (var ind in finallabels) {
                 i = finallabels[ind];
                 if (datasetstemp[ds].hasOwnProperty(i)) points.push(datasetstemp[ds][i]);else points.push(0);
               }
               var dataset = {};
-              dataset.label = ds;
+              dataset.label = ds2;
               dataset.data = points;
               dataset.backgroundColor = this.addTransparency(this.$rootScope.colors[count], 0.2); //'rgba(54, 162, 235, 0.2)',
               dataset.borderColor = this.$rootScope.colors[count];
@@ -355,7 +375,6 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
               labels: finallabels,
               datasets: finaldatasets
             };
-
             this.data = finaldata;
           }
         }, {

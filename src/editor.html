@@ -55,5 +55,12 @@
 			</div>
 		</div>
 		
+		<div class="gf-form">
+			<label class="gf-form-label width-12">Series Alias</label>
+			<info-popover   mode="right-absolute">Sets the series title. Example: A=Paris;B=Brussels;C=New York;</info-popover>
+			<input type="text" class="input-small gf-form-input max-width-30" ng-model="ctrl.panel.radarSettings.seriesAlias" ng-change="ctrl.render()"
+			    ng-model-onblur>
+		</div>
+
 	</div>
 </div>

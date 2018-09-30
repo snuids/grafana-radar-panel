@@ -62,3 +62,6 @@ Note the graph displays the last value of each time serie.
 
 ## v1.4.1 (12/Dec/2017)
 - Fixed a bug that prevents the graph to be corrrectly displayed when the serie has only one point. (Thx shizacat) 
+
+## v1.4.2 (30/Sep/2018)
+- Alias option added in order to rename the serie for SQL datasources 
