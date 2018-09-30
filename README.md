@@ -6,6 +6,8 @@ The plugin was tested with:
 
   * Elastic Search 5.5 as data source.
   * InfluxDB 1.3.6
+  * PostGreSQL
+  * MariaDB
 
 ## Installation
 
