@@ -21,8 +21,13 @@
 			</span>
 		</div>
 		<div class="gf-form">
-			<label class="gf-form-label width-12">Font Size</label>
+			<label class="gf-form-label width-12">Fontx Size</label>
 			<input type="text" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.radarSettings.fontSize" ng-change="ctrl.render()"
+			    ng-model-onblur>
+		</div>
+		<div class="gf-form">
+			<label class="gf-form-label width-12">Animation (ms)</label>
+			<input type="text" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.radarSettings.animationDurationMs" ng-change="ctrl.render()"
 			    ng-model-onblur>
 		</div>
 	</div>
@@ -39,6 +44,23 @@
 		<h5 class="section-heading">Miscellaneous</h5>
 		<gf-form-switch class="gf-form" label="Ignore Time (InfluxDB)" label-class="width-12" checked="ctrl.panel.radarSettings.ignoreTimeInfluxDB"
 		    on-change="ctrl.render()"></gf-form-switch>
+			
+		<h5 class="section-heading">Scale</h5>
+		<div class="gf-form">
+			<label class="gf-form-label width-12">Min</label>
+			<input type="text" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.radarSettings.scaleMin" ng-change="ctrl.render()"
+			    ng-model-onblur>
+		</div>
+		<div class="gf-form">
+			<label class="gf-form-label width-12">Max</label>
+			<input type="text" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.radarSettings.scaleMax" ng-change="ctrl.render()"
+			    ng-model-onblur>
+		</div>
+		<div class="gf-form">
+			<label class="gf-form-label width-12">Step</label>
+			<input type="text" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.radarSettings.scaleStep" ng-change="ctrl.render()"
+			    ng-model-onblur>
+		</div>
 	</div>
 
 	
@@ -63,4 +85,5 @@
 		</div>
 
 	</div>
+	
 </div>
