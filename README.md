@@ -67,3 +67,6 @@ Note the graph displays the last value of each time serie.
 
 ## v1.4.2 (30/Sep/2018)
 - Alias option added in order to rename the serie for SQL datasources 
+
+## v1.4.3 (06/Mar/2019)
+- Merged fremag modifications: New chart options: min, max, step, animation 
