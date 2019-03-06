@@ -1,6 +1,6 @@
 {
   "name": "radargraph-panel",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Radar Graph Panel Plugin for Grafana",
   "main": "src/module.js",
   "scripts": {
