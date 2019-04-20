@@ -78,3 +78,7 @@ Note the graph displays the last value of each time serie.
 
 ## v1.4.3 (06/Mar/2019)
 - Merged fremag modifications: New chart options: min, max, step, animation 
+
+## v1.4.4 (20/Apr/2019)
+- Autoscale option added
+- Tick background can be hidden 
