@@ -19,11 +19,13 @@ const panelDefaults = {
     ignoreTimeInfluxDB: false,
     limitAspectRatio: true,
     aspectRatio: 2.2,
-    seriesAlias:'',
-	scaleMin: 0,
-	scaleMax: 0,
-	scaleStep: 0,
-	animationDurationMs: 0
+    seriesAlias: '',
+    autoScale: true,
+    drawTicksBackground:true,
+    scaleMin: 0,
+    scaleMax: 0,
+    scaleStep: 0,
+    animationDurationMs: 0
   }
 };
 
@@ -83,17 +85,25 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
           fontSize: parseInt(this.panel.radarSettings.fontSize),
           fontColor: this.panel.radarSettings.fontColor
         },
-		ticks: {
-			min: Number(this.panel.radarSettings.scaleMin),
-			max: Number(this.panel.radarSettings.scaleMax),
-			stepSize: Number(this.panel.radarSettings.scaleStep)
-		},
-		animation: {
-			duration: Number(this.panel.radarSettings.animationDurationMs)
-		}
-		
+        animation: {
+          duration: Number(this.panel.radarSettings.animationDurationMs)
+        },
+        ticks:{
+          showLabelBackdrop: this.panel.radarSettings.drawTicksBackground
+        }
+
       }
     };
+
+    if(!this.panel.radarSettings.autoScale)
+    {
+      this.options.scale.ticks={
+        showLabelBackdrop: this.panel.radarSettings.drawTicksBackground,
+        min: Number(this.panel.radarSettings.scaleMin),
+        max: Number(this.panel.radarSettings.scaleMax),
+        stepSize: Number(this.panel.radarSettings.scaleStep)
+      }
+    }
 
     if (this.currentOptions == null)
       this.currentOptions = JSON.stringify(this.options);
@@ -212,7 +222,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     var i = 0;
 
     for (var key in datasets) {
-      
+
       var newdata = [];
       for (var key2 in labels)
         if (key2 in datasets[key])
@@ -261,27 +271,25 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     }
 
     // loads alias
-    var seriesAliasTable=[];
-    if(this.panel.radarSettings.seriesAlias!=null)
-      seriesAliasTable=this.panel.radarSettings.seriesAlias.split(";");
+    var seriesAliasTable = [];
+    if (this.panel.radarSettings.seriesAlias != null)
+      seriesAliasTable = this.panel.radarSettings.seriesAlias.split(";");
 
-    var seriesAliasHT={}
-    
-    for (var j in seriesAliasTable)
-    {
-      var alias=seriesAliasTable[j].split('=');
-      if(alias.length>1)
-      {
-        seriesAliasHT[alias[0]]=alias[1]
+    var seriesAliasHT = {}
+
+    for (var j in seriesAliasTable) {
+      var alias = seriesAliasTable[j].split('=');
+      if (alias.length > 1) {
+        seriesAliasHT[alias[0]] = alias[1]
       }
     }
 
-    var count=0;
+    var count = 0;
     for (var ds in datasetstemp) {
-      
-      var ds2=ds;
-      if(seriesAliasHT[ds]!=null)
-        ds2=seriesAliasHT[ds];
+
+      var ds2 = ds;
+      if (seriesAliasHT[ds] != null)
+        ds2 = seriesAliasHT[ds];
 
       var points = [];
       for (var ind in finallabels) {
@@ -294,8 +302,8 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
       var dataset = {}
       dataset.label = ds2;
       dataset.data = points;
-      dataset.backgroundColor= this.addTransparency(this.$rootScope.colors[count], 0.2); //'rgba(54, 162, 235, 0.2)',
-      dataset.borderColor= this.$rootScope.colors[count];
+      dataset.backgroundColor = this.addTransparency(this.$rootScope.colors[count], 0.2); //'rgba(54, 162, 235, 0.2)',
+      dataset.borderColor = this.$rootScope.colors[count];
 
       datasets.push(dataset);
       count++;
@@ -374,21 +382,21 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
   //***************************************************
   onDataReceived(dataList) {
     var newseries = [];
-    
+
     this.data = {
       labels: ['Running', 'Swimming', 'Eating', 'Cycling', 'Sleeping'],
       datasets: [{
-          data: [Math.random() * 100, 10, 4, 2, 30],
-          label: 'serie 1',
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          borderColor: 'rgb(54, 162, 235)'
-        },
-        {
-          data: [10, 30, 14, 22, 3],
-          label: 'serie 2',
-          backgroundColor: 'rgba(235, 162, 54, 0.2)',
-          borderColor: 'rgb(235, 162, 54)'
-        }
+        data: [Math.random() * 100, 10, 4, 2, 30],
+        label: 'serie 1',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgb(54, 162, 235)'
+      },
+      {
+        data: [10, 30, 14, 22, 3],
+        label: 'serie 2',
+        backgroundColor: 'rgba(235, 162, 54, 0.2)',
+        borderColor: 'rgb(235, 162, 54)'
+      }
       ]
     };
 

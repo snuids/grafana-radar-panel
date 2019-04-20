@@ -26,12 +26,12 @@
       {"name": "Options", "path": "src/img/screenshot-radar-metrics2.jpg"},
       {"name": "Options", "path": "src/img/screenshot-radar-metrics3.jpg"}
     ],
-    "version": "1.4.3",
-    "updated": "2018-09-28"
+    "version": "1.4.4",
+    "updated": "2019-04-20"
   },
 
   "dependencies": {
-    "grafanaVersion": "3.x.x",
+    "grafanaVersion": "6.x.x",
     "plugins": [ ]
   }
 }

@@ -76,6 +76,8 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
           limitAspectRatio: true,
           aspectRatio: 2.2,
           seriesAlias: '',
+          autoScale: true,
+          drawTicksBackground: true,
           scaleMin: 0,
           scaleMax: 0,
           scaleStep: 0,
@@ -148,17 +150,24 @@ System.register(['app/plugins/sdk', 'moment', 'lodash', 'app/core/time_series', 
                   fontSize: parseInt(this.panel.radarSettings.fontSize),
                   fontColor: this.panel.radarSettings.fontColor
                 },
-                ticks: {
-                  min: Number(this.panel.radarSettings.scaleMin),
-                  max: Number(this.panel.radarSettings.scaleMax),
-                  stepSize: Number(this.panel.radarSettings.scaleStep)
-                },
                 animation: {
                   duration: Number(this.panel.radarSettings.animationDurationMs)
+                },
+                ticks: {
+                  showLabelBackdrop: this.panel.radarSettings.drawTicksBackground
                 }
 
               }
             };
+
+            if (!this.panel.radarSettings.autoScale) {
+              this.options.scale.ticks = {
+                showLabelBackdrop: this.panel.radarSettings.drawTicksBackground,
+                min: Number(this.panel.radarSettings.scaleMin),
+                max: Number(this.panel.radarSettings.scaleMax),
+                stepSize: Number(this.panel.radarSettings.scaleStep)
+              };
+            }
 
             if (this.currentOptions == null) this.currentOptions = JSON.stringify(this.options);
 

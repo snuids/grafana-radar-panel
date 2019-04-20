@@ -13,6 +13,14 @@ The plugin was tested with:
 
 Copy the dist folder in your grafana plugin directory and rename it to radarpanel.
 
+
+## Compile
+
+Run
+
+* npm i
+* grunt
+
 # Screenshots
 
 ## Showcase
