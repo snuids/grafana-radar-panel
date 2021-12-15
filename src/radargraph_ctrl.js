@@ -1,12 +1,13 @@
-import {
-  MetricsPanelCtrl
-} from 'app/plugins/sdk';
-import moment from 'moment';
+import { MetricsPanelCtrl } from 'grafana/app/plugins/sdk';
 import _ from 'lodash';
-import TimeSeries from 'app/core/time_series';
+import TimeSeries from 'grafana/app/core/time_series2';
 
-import './css/radargraph-panel.css!';
-import './Chart.js'
+import './css/radargraph-panel.css';
+import * as Chart from './external/Chart.min';
+
+import { PanelEvents } from '@grafana/data';
+import { config } from '@grafana/runtime';
+import { DataProcessor } from './data_processor';
 
 const panelDefaults = {
   bgColor: null,
@@ -36,14 +37,14 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
 
     this.$rootScope = $rootScope;
 
-    this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
-    this.events.on('panel-teardown', this.onPanelTeardown.bind(this));
-    this.events.on('panel-initialized', this.render.bind(this));
+    this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
+    this.events.on(PanelEvents.panelTeardown, this.onPanelTeardown.bind(this));
+    this.events.on(PanelEvents.initialized, this.render.bind(this));
 
-    this.events.on('render', this.onRender.bind(this));
-    this.events.on('data-received', this.onDataReceived.bind(this));
-    this.events.on('data-error', this.onDataError.bind(this));
-    this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
+    this.events.on(PanelEvents.render, this.onRender.bind(this));
+    this.events.on(PanelEvents.dataReceived, this.onDataReceived.bind(this));
+    this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
+    this.events.on(PanelEvents.dataSnapshotLoad, this.onDataReceived.bind(this));
 
     this.percentPerLight = 100;
 
@@ -55,7 +56,19 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
 
     this.currentOptions = null;
 
-    this.updateRadar();
+    // this.updateRadar();
+    console.log('Grafana buildInfo:', config.buildInfo);
+
+    const majorVersion = parseInt(config.buildInfo.version.split('.', 2)[0], 10);
+    if (majorVersion <= 6) {
+      // data will fall into onDataReceived() with series data format
+    } else {
+      // table like DataFrame[] data format for both table and series data mode
+      this.useDataFrames = true;
+      this.events.on(PanelEvents.dataFramesReceived, this.onDataFramesReceived.bind(this));
+      this.events.on(PanelEvents.dataSnapshotLoad, this.onDataFramesReceived.bind(this));
+      this.processor = new DataProcessor(this.panel, majorVersion);
+    }
   }
 
   onDataError() {
@@ -82,7 +95,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
           color: this.panel.radarSettings.gridColor
         },
         pointLabels: {
-          fontSize: parseInt(this.panel.radarSettings.fontSize),
+          fontSize: parseInt(this.panel.radarSettings.fontSize, 10),
           fontColor: this.panel.radarSettings.fontColor
         },
         animation: {
@@ -329,7 +342,6 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     var labels = {};
     var datasets = {};
 
-
     for (var i = 0; i < fulldata.length; i++) {
       var j = 0;
       var curkey = '';
@@ -380,9 +392,15 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
   //***************************************************
   // Data received
   //***************************************************
+  onDataFramesReceived(dataFrames) {
+    const dataList = this.processor.getSeriesList({
+      dataList: dataFrames,
+      range: this.range,
+    });
+    this.onDataReceived(dataList);
+  }
+  
   onDataReceived(dataList) {
-    var newseries = [];
-
     this.data = {
       labels: ['Running', 'Swimming', 'Eating', 'Cycling', 'Sleeping'],
       datasets: [{
@@ -422,7 +440,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
   }
 
   onInitEditMode() {
-    this.addEditorTab('Options', 'public/plugins/snuids-radar-panel/editor.html', 2);
+    this.addEditorTab('Options', 'public/plugins/snuids-radar-panel/partials/editor.html', 2);
   }
 
   onPanelTeardown() {
@@ -461,4 +479,4 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
   }
 }
 
-RadarGraphCtrl.templateUrl = 'module.html';
+RadarGraphCtrl.templateUrl = 'partials/module.html';
