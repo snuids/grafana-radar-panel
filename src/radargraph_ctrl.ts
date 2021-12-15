@@ -31,6 +31,23 @@ const panelDefaults = {
 };
 
 export class RadarGraphCtrl extends MetricsPanelCtrl {
+  static templateUrl = 'partials/module.html';
+  
+  $rootScope: any;
+  percentPerLight: number;
+  data: any;
+  canvasid: string;
+  ctx: any;
+  radar: any;
+  currentOptions: any;
+  nextTickPromise: any;
+
+  processor?: DataProcessor;
+
+  series: any[];
+  options: any;
+
+  /** @ngInject */
   constructor($scope, $injector, $rootScope) {
     super($scope, $injector);
     _.defaultsDeep(this.panel, panelDefaults);
@@ -56,7 +73,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
 
     this.currentOptions = null;
 
-    // this.updateRadar();
+    this.updateRadar();
     console.log('Grafana buildInfo:', config.buildInfo);
 
     const majorVersion = parseInt(config.buildInfo.version.split('.', 2)[0], 10);
@@ -64,7 +81,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
       // data will fall into onDataReceived() with series data format
     } else {
       // table like DataFrame[] data format for both table and series data mode
-      this.useDataFrames = true;
+      (this as any).useDataFrames = true;
       this.events.on(PanelEvents.dataFramesReceived, this.onDataFramesReceived.bind(this));
       this.events.on(PanelEvents.dataSnapshotLoad, this.onDataFramesReceived.bind(this));
       this.processor = new DataProcessor(this.panel, majorVersion);
@@ -124,7 +141,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
 
     if (this.ctx == null)
       if (document.getElementById(this.canvasid) != null)
-        this.ctx = document.getElementById(this.canvasid).getContext('2d');
+        this.ctx = (document.getElementById(this.canvasid) as HTMLCanvasElement).getContext('2d');
 
     if (this.ctx != null) {
       if (this.radar == null) {
@@ -143,7 +160,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
               this.radar.destroy();
               $("canvas#" + this.canvasid).remove();
               $("div#panel" + this.canvasid).append('<canvas id="' + this.canvasid + '"></canvas>');
-              this.ctx = document.getElementById(this.canvasid).getContext('2d');
+              this.ctx = (document.getElementById(this.canvasid) as HTMLCanvasElement).getContext('2d');
 
             }
             this.radar = new Chart(this.ctx, {
@@ -216,7 +233,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
           if (!(fulldata[0].rows[i][0] in labels))
             labels[fulldata[0].rows[i][0]] = true;
 
-          var serie = fulldata[0]["columns"][0].text;
+          var serie = fulldata[0]["columns"][0].text as string;
 
 
           if (!(serie in datasets))
@@ -312,7 +329,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
         else
           points.push(0);
       }
-      var dataset = {}
+      var dataset = {} as any;
       dataset.label = ds2;
       dataset.data = points;
       dataset.backgroundColor = this.addTransparency(this.$rootScope.colors[count], 0.2); //'rgba(54, 162, 235, 0.2)',
@@ -341,6 +358,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     console.log("PSQL not detected");
     var labels = {};
     var datasets = {};
+
 
     for (var i = 0; i < fulldata.length; i++) {
       var j = 0;
@@ -478,5 +496,3 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
     });
   }
 }
-
-RadarGraphCtrl.templateUrl = 'partials/module.html';

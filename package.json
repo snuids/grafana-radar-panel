@@ -26,9 +26,7 @@
     "@types/jquery": "^3.3.38",
     "@types/lodash": "^4.14.119",
     "@types/node": "^11.9.6",
-    "eslint": "^2.5.1",
-    "eslint-config-airbnb": "^6.2.0",
-    "eslint-plugin-import": "^1.4.0"
+    "eslint": "^7.32.0"
   },
   "dependencies": {}
 }
