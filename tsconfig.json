@@ -1,0 +1,36 @@
+{
+  "extends": "./node_modules/@grafana/toolkit/src/config/tsconfig.plugin.json",
+  "compileOnSave": false,
+  "compilerOptions": {
+    "allowJs": true,
+    // Don't emit; allow Babel to transform files.
+    //"noEmit": true,
+    // Disallow features that require cross-file information for emit.
+    //"isolatedModules": true,
+
+    "removeComments": false,
+    "inlineSourceMap": false,
+    "emitDecoratorMetadata": false,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "noImplicitUseStrict": false,
+    "noEmitOnError": false,
+    "noUnusedLocals": false,
+
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "outDir": "dist",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
+  },  
+  "include": [
+    "src",
+    "types"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}

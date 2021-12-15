@@ -1,0 +1,38 @@
+{
+  "type": "panel",
+  "name": "Radar Graph",
+  "id": "snuids-radar-panel",
+
+  "info": {
+    "description": "Radar Graph for grafana",
+    "author": {
+      "name": "snuids",
+      "url": "https://github.com/snuids/grafana-radar-panel"
+    },
+    "keywords": ["radar", "panel"],
+    "logos": {
+      "small": "img/radar_logo.jpg",
+      "large": "img/radar_logo.jpg"
+    },
+    "links": [
+      {"name": "Project site", "url": "https://github.com/snuids/grafana-radar-panel"},
+      {"name": "MIT License", "url": "https://github.com/snuids/grafana-radar-panel"}
+    ],
+    "screenshots": [
+      {"name": "Showcase", "path": "img/screenshot-radar-showcase.jpg"},
+      {"name": "Showcase", "path": "img/screenshot-radar-showcase2.jpg"},
+      {"name": "Options", "path": "img/screenshot-radar-options.jpg"},
+      {"name": "Options", "path": "img/screenshot-radar-metrics.jpg"},
+      {"name": "Options", "path": "img/screenshot-radar-metrics2.jpg"},
+      {"name": "Options", "path": "img/screenshot-radar-metrics3.jpg"}
+    ],
+    "version": "%VERSION%",
+    "updated": "2021-12-20"
+  },
+
+  "dependencies": {
+    "grafanaDependency": ">=6.7.0",
+    "grafanaVersion": "6.7+",
+    "plugins": [ ]
+  }
+}
