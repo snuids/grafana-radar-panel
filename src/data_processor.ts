@@ -54,7 +54,7 @@ export class DataProcessor {
         if (this.grafanaVersion >= 8) {
           const spcpos = fullname.indexOf(' ');
           name = spcpos >= 0 ? fullname.slice(spcpos) : name;
-        } 
+        }
         const datapoints = [];
 
         for (let r = 0; r < series.length; r++) {

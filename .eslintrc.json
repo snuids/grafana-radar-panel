@@ -1,0 +1,7 @@
+{
+  "extends": ["@grafana/eslint-config"],
+  "rules": {
+    "eqeqeq": ["off"],
+    "no-redeclare": ["off"]
+  }
+}
