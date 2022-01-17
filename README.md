@@ -82,3 +82,6 @@ Note the graph displays the last value of each time serie.
 ## v1.4.4 (20/Apr/2019)
 - Autoscale option added
 - Tick background can be hidden 
+
+## v1.5.0 (17/Jan/2022)
+- Plugin signed
