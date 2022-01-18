@@ -177,6 +177,7 @@ export class RadarGraphCtrl extends MetricsPanelCtrl {
         this.radar.update();
       }
     }
+    this.renderingCompleted();
   }
 
   decodeNonHistoricalData(fulldata) {

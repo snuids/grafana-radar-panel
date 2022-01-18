@@ -85,3 +85,6 @@ Note the graph displays the last value of each time serie.
 
 ## v1.5.0 (17/Jan/2022)
 - Plugin signed
+
+## v1.5.1 (18/Jan/2022)
+- this.renderingCompleted() added at the end of OnRender (Issue of GZRad)
